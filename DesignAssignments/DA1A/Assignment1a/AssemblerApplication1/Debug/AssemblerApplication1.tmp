@@ -1,0 +1,42 @@
+<ASSEMBLER_INFO>
+ <VERSION>2.2.7</VERSION>
+ <DEVICE>"ATmega328PB"</DEVICE>
+ <WORKING_DIR>C:\Users\AZNki\Documents\Atmel Studio\7.0\class\AssemblerApplication1\AssemblerApplication1\Debug</WORKING_DIR>
+ <INCLUDE_PATH>
+  <DIR>C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.3.300\avrasm\inc</DIR>
+  <DIR>C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avrassembler\Include</DIR>
+  <DIR></DIR>
+ </INCLUDE_PATH>
+ <SOURCE_FILE>C:\Users\AZNki\Documents\Atmel Studio\7.0\class\AssemblerApplication1\AssemblerApplication1\main.asm</SOURCE_FILE>
+ <INCLUDED_FILES>
+  <FILE>C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.3.300\avrasm\inc\m328PBdef.inc</FILE>
+  <FILE>C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.3.300\avrasm\inc\m328pbdef.inc</FILE>
+ </INCLUDED_FILES>
+ <OBJECT_FILES>
+  <FILE>C:\Users\AZNki\Documents\Atmel Studio\7.0\class\AssemblerApplication1\AssemblerApplication1\Debug\AssemblerApplication1.obj</FILE>
+ </OBJECT_FILES>
+ <HEX_FILES>
+  <FILE>AssemblerApplication1.hex</FILE>
+ </HEX_FILES>
+ <OUTPUT_FILES>
+  <FILE>AssemblerApplication1.map</FILE>
+  <FILE>AssemblerApplication1.lss</FILE>
+ </OUTPUT_FILES>
+ <LABELS>
+  <mpy32u><FILE>C:\Users\AZNki\Documents\Atmel Studio\7.0\class\AssemblerApplication1\AssemblerApplication1\main.asm</FILE><LINE>55</LINE></mpy32u>
+  <initial><FILE>C:\Users\AZNki\Documents\Atmel Studio\7.0\class\AssemblerApplication1\AssemblerApplication1\main.asm</FILE><LINE>64</LINE></initial>
+  <mul32><FILE>C:\Users\AZNki\Documents\Atmel Studio\7.0\class\AssemblerApplication1\AssemblerApplication1\main.asm</FILE><LINE>71</LINE></mul32>
+  <w1><FILE>C:\Users\AZNki\Documents\Atmel Studio\7.0\class\AssemblerApplication1\AssemblerApplication1\main.asm</FILE><LINE>78</LINE></w1>
+  <w2><FILE>C:\Users\AZNki\Documents\Atmel Studio\7.0\class\AssemblerApplication1\AssemblerApplication1\main.asm</FILE><LINE>82</LINE></w2>
+  <w3><FILE>C:\Users\AZNki\Documents\Atmel Studio\7.0\class\AssemblerApplication1\AssemblerApplication1\main.asm</FILE><LINE>86</LINE></w3>
+  <w4><FILE>C:\Users\AZNki\Documents\Atmel Studio\7.0\class\AssemblerApplication1\AssemblerApplication1\main.asm</FILE><LINE>90</LINE></w4>
+  <w5><FILE>C:\Users\AZNki\Documents\Atmel Studio\7.0\class\AssemblerApplication1\AssemblerApplication1\main.asm</FILE><LINE>94</LINE></w5>
+  <w6><FILE>C:\Users\AZNki\Documents\Atmel Studio\7.0\class\AssemblerApplication1\AssemblerApplication1\main.asm</FILE><LINE>98</LINE></w6>
+  <w7><FILE>C:\Users\AZNki\Documents\Atmel Studio\7.0\class\AssemblerApplication1\AssemblerApplication1\main.asm</FILE><LINE>102</LINE></w7>
+  <cont><FILE>C:\Users\AZNki\Documents\Atmel Studio\7.0\class\AssemblerApplication1\AssemblerApplication1\main.asm</FILE><LINE>108</LINE></cont>
+  <addContent><FILE>C:\Users\AZNki\Documents\Atmel Studio\7.0\class\AssemblerApplication1\AssemblerApplication1\main.asm</FILE><LINE>121</LINE></addContent>
+  <loop><FILE>C:\Users\AZNki\Documents\Atmel Studio\7.0\class\AssemblerApplication1\AssemblerApplication1\main.asm</FILE><LINE>111</LINE></loop>
+  <end><FILE>C:\Users\AZNki\Documents\Atmel Studio\7.0\class\AssemblerApplication1\AssemblerApplication1\main.asm</FILE><LINE>115</LINE></end>
+  <end2><FILE>C:\Users\AZNki\Documents\Atmel Studio\7.0\class\AssemblerApplication1\AssemblerApplication1\main.asm</FILE><LINE>119</LINE></end2>
+ </LABELS>
+</ASSEMBLER_INFO>

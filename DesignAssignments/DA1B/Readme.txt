@@ -5,4 +5,7 @@ Student #: 2001227483
 Student Email: lumbrj1@unlv.nevada.edu 
 
 Primary Github address: 
-https://youtu.be/cKYmtSZn6Mo
+https://github.com/lumbrj1/submission 
+
+Youtube Link:
+https://youtu.be/NDLISOViaPE 

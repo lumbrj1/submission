@@ -80,11 +80,11 @@ int main(void){
 	{
 		read_adc();	//reads from ADC5 
 		ftemp = adc_temp;	
-		ftemp = (adc_temp*(9/5))+32;	//stores the Fahrenheit conversion of the adc_temp 
-		USART_tx_string("Centigrade: ");	//displays centigrade value 
+		ftemp = (((adc_temp-32)*5)/9);	//stores the Fahrenheit conversion of the adc_temp 
+		USART_tx_string("Fahrenheit: ");	//displays fahrenheit value 
 		snprintf(outs,sizeof(outs),"%3d\r\n",adc_temp);	
 		USART_tx_string(outs);
-		USART_tx_string("Fahrenheit: ");	//displays fahrenheit value 
+		USART_tx_string("Centigrade: ");	//displays centigrade value 
 		snprintf(outs,sizeof(outs),"%3d\r\n\n",ftemp);
 		USART_tx_string(outs);
 		t_overflow=0;		//reset overflow counter 

@@ -108,7 +108,7 @@ int main(void){
 	while(1)
 	{
 		read_adc();	//read value of sensor 
-		ftemp = ((adc_temp*9)/5)+32;	//turn value from sensor to fahrenheit
+		ftemp = (((adc_temp-32)*5)/9);	//turn value from sensor to fahrenheit
 		if (((message[0]=='h')& (message[1]=='\0'))|(first_time==0)){	//if reboot or 'h' is input 
 			first_time=1;	//for reboot purpose 
 			USART_tx_string("\r\nHELP SCREEN\r\n");	//print all these messages 
@@ -122,12 +122,12 @@ int main(void){
 		}
 		if ((message[0]=='t')& (message[1]=='\0')){	//if input is 't'
 			USART_tx_string("\r\nCentigrade: ");	//displays centigrade value
-			snprintf(outs,sizeof(outs),"%3d\r\n",adc_temp);	
+			snprintf(outs,sizeof(outs),"%3d\r\n",ftemp);	
 			USART_tx_string(outs);
 		}
 		if ((message[0]=='T')& (message[1]=='\0')){	//if input is 'T'
 			USART_tx_string("\r\nFahrenheit: ");	//displays fahrenheit value
-			snprintf(outs,sizeof(outs),"%3d\r\n",ftemp);
+			snprintf(outs,sizeof(outs),"%3d\r\n",adc_temp);
 			USART_tx_string(outs);
 		}
 		if ((message[0]=='o')& (message[1]=='\0')){	//if input is 'o'

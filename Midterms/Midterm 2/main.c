@@ -16,11 +16,11 @@
 #define UBRR_9600 103
 
 //declaring variable for controlling and storing values
-volatile unsigned int power, revCtr0=0, revCtr1=0, escape=0, valcap0=20, valcap1=20;
+volatile unsigned int power, revCtr0=0, revCtr1=0, escape=0, valcap0=100, valcap1=100;
 volatile unsigned int rise0_0, fall0_0, rise0_1, fall0_1;
 volatile unsigned int rise1_0, fall1_0, rise1_1, fall1_1;
-volatile unsigned int t1ovf=0, t2ovf=0;
-volatile unsigned int res1=0, res2=0, res4=0;
+volatile float t1ovf=0, t2ovf=0, done0=0, done1=0;
+volatile float  res1=0, res2=0, res4=0;
 volatile float rpm1, rpm2, rpm4;
 volatile unsigned int adc_val;
 char outs[20];
@@ -100,17 +100,17 @@ void calculate(){
 	//rpm = 60/rms 
 	_delay_ms(100);
 	//get average of the 20 values 
-	res1= res1/20;
-	res2= res2/20;
-	res4= res4/20;
+	res1= res1/100;
+	res2= res2/100;
+	res4= res4/100;
 	
 	//using the value and formula calculated above
-	rpm1 = 60/((float)res1 * 0.00096);
-	rpm2 = 60/((float)res2 * 0.00096);
-	rpm4 = 60/((float)res4 * 0.00096);
+	rpm1 = 60/((float)res1 * 0.00192);
+	rpm2 = 60/((float)res2 * 0.00192);
+	rpm4 = 60/((float)res4 * 0.00192);
 }
 void initial() {
-	rpm1=rpm2=rpm4=0;	//initial values
+	rpm1=rpm2=rpm4=0;	//initialize values
 	escape=1;
 	valcap0=20;
 	valcap1=20;
@@ -141,7 +141,7 @@ int main(void)
 		USART_tx_string("\r\nspeed value : ");	//display spd_value value to ensure it doesn't exceed DC 95% 
 		snprintf(outs,sizeof(outs),"%3d\r\n",spd_control);
 		USART_tx_string(outs);
-		_delay_ms(1000);
+		_delay_ms(5000);
 		if (spd_control>=255){	//max speed is 255
 			OCR0A = 255;
 		} else {
@@ -149,6 +149,14 @@ int main(void)
 		}
 		escape=0;
 		while ((escape==0)&(power==1)){	//measure 1x, 2x, 4x under a set speed
+			if (done0==1 && done1==1){
+				res1 += (rise0_1 - rise0_0);	//keep adding the difference between first rise and second rise
+				res2 += (((rise0_1 - rise0_0) + (fall0_1 -fall0_0))/2);	//avg of difference between rising and falling
+				res4 += (((rise0_1-rise0_0) + (fall0_1-fall0_0)+ (rise1_1-rise1_0)+ (fall1_1-fall1_0))/4);
+				done0=0;
+				done1=0;
+			}
+			
 			if (valcap1==0 && valcap0==0){	//if program got 20 values of capture
 				calculate();	//calculate rpm for 1x, 2x, 4x 
 				USART_tx_string("\r\n1X: ");	//display all values calculated 
@@ -199,53 +207,51 @@ ISR (TIMER2_OVF_vect){
 }
 
 ISR (INT0_vect){
-	if ((power==1) & (valcap0>0)){ //if motor is on and there's no 20 data read yet 
+	if ((power==1) & (done0==0) & (valcap0>0)){ //if motor is on and there's no 20 data read yet 
 		if (revCtr0==0){	//read the first rise 
-			rise0_0 = ((uint32_t)(TCNT1) + (uint32_t)(t1ovf * 0x10000));	//take tick at the moment of first rise 
+			rise0_0 = ((uint32_t)(TCNT1) + (uint32_t)(t1ovf * 0x10000UL));	//take tick at the moment of first rise 
 			EICRA &= ~(1<<ISC00);	//change to sensing falling edge 
 			revCtr0++;	
 		} else if (revCtr0==1){	//read the first fall 
-			fall0_0 =  ((uint32_t)(TCNT1) + (uint32_t)(t1ovf * 0x10000));	//take tick at the moment of first fall 
+			fall0_0 =  ((uint32_t)(TCNT1) + (uint32_t)(t1ovf * 0x10000UL));	//take tick at the moment of first fall 
 			EICRA |= (1<<ISC00);	//change to sensing rising edge 
 			revCtr0++;
 		} else if (revCtr0==2){	//read the second rising edge 
-			rise0_1 =  ((uint32_t)(TCNT1) + (uint32_t)(t1ovf * 0x10000));	//take tick at the moment of second rise 
+			rise0_1 =  ((uint32_t)(TCNT1) + (uint32_t)(t1ovf * 0x10000UL));	//take tick at the moment of second rise 
 			EICRA &= ~(1<<ISC00);	//change to sensing falling edge 
 			revCtr0++;	
 		} else if (revCtr0==3){	//read the second falling edge 
-			fall0_1 = ((uint32_t)(TCNT1) + (uint32_t)(t1ovf * 0x10000));	//take tick at the moment of second fall 
+			fall0_1 = ((uint32_t)(TCNT1) + (uint32_t)(t1ovf * 0x10000UL));	//take tick at the moment of second fall 
 			EICRA |= (1<<ISC00);	//change to sensing rising edge 
 			revCtr0=0;	//restart capture 
 			t1ovf=0;	//reset overflow
-			res1 += (rise0_1 - rise0_0);	//keep adding the difference between first rise and second rise 
-			res2 += (((rise0_1 - rise0_0) + (fall0_1 -fall0_0))/2);	//avg of difference between rising and falling 
+			done0=1;
 			TCNT1=0;	//reset timer1
 			valcap0--;	//decrease data counter 
 		}
 	}
 }
 ISR (INT1_vect){
-	if ((power==1)  & (valcap1>0)){	//if motor is on and there's no 20 data read yet 
+	if ((power==1) &(done1==0) & (valcap1>0)){	//if motor is on and there's no 20 data read yet 
 		if (revCtr1==0) { //read first rising edge 
-			rise1_0 = ((uint32_t)(TCNT2) + (uint32_t)(t2ovf * 0x100));	//take the tick at the moment of first rise 
+			rise1_0 = ((uint32_t)(TCNT2) + (uint32_t)(t2ovf * 0x100UL));	//take the tick at the moment of first rise 
 			EICRA &= ~(1<<ISC10);//change to sensing falling edge 
 			revCtr1++;
 		} else if (revCtr1==1){	//read first falling edge 
-			fall1_0 = ((uint32_t)(TCNT2) + (uint32_t)(t2ovf * 0x100));	//take the tick at the moment of first fall 
+			fall1_0 = ((uint32_t)(TCNT2) + (uint32_t)(t2ovf * 0x100UL));	//take the tick at the moment of first fall 
 			EICRA |= (1<<ISC10); //change to sensing rising edge 
 			revCtr1++;
 		} else if (revCtr1==2){	//read the second rising edge 
-			rise1_1 = ((uint32_t)(TCNT2) + (uint32_t)(t2ovf * 0x100));	//take the tick at the momemnt of second rise 
+			rise1_1 = ((uint32_t)(TCNT2) + (uint32_t)(t2ovf * 0x100UL));	//take the tick at the momemnt of second rise 
 			EICRA &= ~(1<<ISC10);	//change to sensing falling edge 
 			revCtr1++;
 		} else if (revCtr1==3){	//read the second falling edge 
-			fall1_1 = ((uint32_t)(TCNT2) + (uint32_t)(t2ovf * 0x100));	//take the tick at the moment of second fall 
+			fall1_1 = ((uint32_t)(TCNT2) + (uint32_t)(t2ovf * 0x100UL));	//take the tick at the moment of second fall 
 			EICRA |= (1<<ISC10);	//change to sensing rising edge 
 			revCtr1=0;	//reset capture 
 			t2ovf=0;	//reset overflow counter 
 			TCNT2=0;	//reset timer2 
-			//avg of ticks between rising edge and falling edge for both INT1 and INT0
-			res4 += (((rise0_1-rise0_0) + (fall0_1-fall0_0)+ (rise1_1-rise1_0)+ (fall1_1-fall1_0))/4);
+			done1=1;
 			valcap1--; // decrease data counter 
 		}
 	}
